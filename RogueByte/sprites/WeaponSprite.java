@@ -16,9 +16,9 @@ public class WeaponSprite implements DisplayableSprite, MovableSprite{
 	private boolean dispose = false;
 	private Image image, imageR;
 	private Image[] images = new Image[8], fullImages = new Image[360];
-	private double angle = 0, Angle = 0, angleInRadians = 0;
+	private double angle = 0, fullAngle = 0, angleInRadians = 0;
 	private final int A = 65, W = 87, S = 83, D = 68;
-	private boolean r = false, u = false, inrange = false; 
+	private boolean r = false, u = false, inRange = false; 
 	private double x = 0, y = 0;
 	
 
@@ -72,8 +72,8 @@ public class WeaponSprite implements DisplayableSprite, MovableSprite{
 
 	@Override
 	public Image getImage() {
-		if(this.inrange) {
-			return this.fullImages[(int) Angle];
+		if(this.inRange) {
+			return this.fullImages[(int) fullAngle];
 		}else {
 			return this.images[(int) angle];
 		}	
@@ -141,7 +141,7 @@ public class WeaponSprite implements DisplayableSprite, MovableSprite{
 
 	@Override
 	public void setDirection(boolean inrange) {
-		this.inrange = inrange;
+		this.inRange = inrange;
 		
 	}
 
@@ -175,8 +175,6 @@ public class WeaponSprite implements DisplayableSprite, MovableSprite{
 			this.angle = 6;
 		}
 		
-		this.Angle %= 360;
-		
 	}
 
 	@Override
@@ -188,13 +186,13 @@ public class WeaponSprite implements DisplayableSprite, MovableSprite{
 		this.x = dd % 1000;
 		
 		this.angleInRadians = Math.atan(x / y);
-		this.Angle = Math.toDegrees(this.angleInRadians);
+		this.fullAngle = Math.toDegrees(this.angleInRadians);
 		
-		if(!u) this.Angle = 180 - this.Angle;
-		if(!r) this.Angle = 360 - this.Angle;
+		if(!u) this.fullAngle = 180 - this.fullAngle;
+		if(!r) this.fullAngle = 360 - this.fullAngle;
 		
-		if(this.Angle < 0) this.angle += 360;
-		this.Angle %= 360;
+		if(this.fullAngle < 0) this.angle += 360;
+		this.fullAngle %= 360;
 		
 		
 	}
