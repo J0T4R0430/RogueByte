@@ -24,8 +24,17 @@ public interface DisplayableSprite {
 	
 	public boolean getDispose();
 	
-	public void setDispose(boolean dispose);
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time);	
+	
+	public boolean getCloak();
+	
+	public void setDirection(boolean right);
+	
+	public void setDistanceToTarget(double d);
+	
+	public void setDispose(boolean dispose);
+	
+	public DisplayableSprite getWeapon();
 	
 }

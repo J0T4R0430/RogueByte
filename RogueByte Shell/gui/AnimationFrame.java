@@ -19,12 +19,17 @@ import java.awt.event.MouseMotionAdapter;
  */
 
 public class AnimationFrame extends JFrame {
+	
+	public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static double width = screenSize.getWidth();
+    public static double height = screenSize.getHeight();
+
 
 	final public static int FRAMES_PER_SECOND = 60;
 	final long REFRESH_TIME = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
 
-	final public static int SCREEN_HEIGHT = 600;
-	final public static int SCREEN_WIDTH = 800;
+	final public static int SCREEN_HEIGHT = (int) height;
+	final public static int SCREEN_WIDTH = (int) width;
 
 	//These variables control where the screen is centered in relation to the logical center of universe.
 	//Generally it makes sense to have these start at half screen width and height, so that the logical
@@ -36,7 +41,7 @@ public class AnimationFrame extends JFrame {
 	private boolean DISPLAY_TIMING = false;
 	
 	//scale at which to render the universe. When 1, each logical unit represents 1 pixel in both x and y dimension
-	private double scale = 1;
+	private double scale = 5;
 	//point in universe on which the screen will center
 	private double logicalCenterX = 0;		
 	private double logicalCenterY = 0;
@@ -71,6 +76,7 @@ public class AnimationFrame extends JFrame {
 	 */
 	public AnimationFrame(Animation animation)
 	{
+		
 		super("");
 		getContentPane().addMouseListener(new MouseAdapter() {
 			@Override
@@ -217,7 +223,7 @@ public class AnimationFrame extends JFrame {
 			sprites = universe.getSprites();
 			player1 = universe.getPlayer1();
 			backgrounds = universe.getBackgrounds();
-			this.scale = universe.getScale();
+			this.scale = 0.65;
 
 			// main game loop
 			while (stop == false && universe.isComplete() == false) {
