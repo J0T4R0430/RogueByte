@@ -4,20 +4,24 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.util.*;
 
-public class StationaryEnemySprite implements DisplayableSprite {
+public class StationaryEnemySprite implements DisplayableSprite, EnemyInterface{
 
 	private double centerX = 0;
 	private double centerY = 0;
 	private double height;
 	private double width;
 	private boolean dispose = false;
+	private boolean right = false;
 	private Image standingLeft, standingRight;
 	private Random rand = new Random();
+	private double distanceToByte;
+	private final int DETECTIONDISTANCE = 1000000;
+
 
 	public StationaryEnemySprite() {
-		this.centerX = rand.nextInt(1000);
+		this.centerX = rand.nextInt(600) + 100;
 		if(rand.nextBoolean()) this.centerX *= -1;
-		this.centerY = rand.nextInt(1000);
+		this.centerY = rand.nextInt(600) + 100;
 		if(rand.nextBoolean()) this.centerY *= -1;
 		try {
 			this.standingLeft = ImageIO.read(new File("res/StationaryEnemy/Left.png"));
@@ -29,7 +33,7 @@ public class StationaryEnemySprite implements DisplayableSprite {
 
 	@Override
 	public Image getImage() {
-		return this.standingLeft;
+		return this.right ? this.standingRight : this.standingLeft;
 	}
 
 	@Override
@@ -69,7 +73,7 @@ public class StationaryEnemySprite implements DisplayableSprite {
 
 	@Override
 	public double getCenterX() {
-		return this.centerY;
+		return this.centerX;
 	}
 
 	@Override
@@ -86,11 +90,42 @@ public class StationaryEnemySprite implements DisplayableSprite {
 	public void setDispose(boolean dispose) {
 		this.dispose = dispose;
 	}
+	
+
+
+	@Override
+	public boolean getCloak() {
+		return false;
+	}
+	
+	@Override
+	public void setDirection(boolean right) {
+		this.right = right;
+	}
+
+	@Override
+	public void setDistanceToTarget(double d) {
+		this.distanceToByte = d;
+	}
+	
 
 	@Override
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
+		if(this.distanceToByte > this.DETECTIONDISTANCE) {
+			if(this.rand.nextInt(200) == 19) {
+				this.right = this.right? false : true;
+			}
+		}
 		
-
 	}
+
+	@Override
+	public WeaponSprite getWeapon() {
+		return null;
+	}
+
+
+
+
 
 }
