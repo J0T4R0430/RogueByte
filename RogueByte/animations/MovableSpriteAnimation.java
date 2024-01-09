@@ -1,18 +1,25 @@
-
 public class MovableSpriteAnimation implements Animation {
 
 	private int universeCount = 0;
-	
+	private Universe current = null;
+
 	public Universe getNextUniverse() {
 
 		universeCount++;
 		
 		if (universeCount == 1) {
-			return new MovableSpriteUniverse();
+			this.current = new MovableSpriteUniverse();
 		}
 		else {
-			return null;
+			this.current = null;
 		}
+		
+		return this.current;
+
+	}
+
+	public Universe getCurrentUniverse() {
+		return this.current;
 	}
 	
 }

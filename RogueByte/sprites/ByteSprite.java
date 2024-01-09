@@ -17,7 +17,7 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 	private boolean dispose = false;
 	private boolean right = true;
 	private final int A = 65, W = 87, S = 83, D = 68, L = 76, SHIFT = 16, DASH_DISTANCE = 50;
-	private final int MOVEMENTSPEED = 4;
+	private final int MOVEMENTSPEED = 6;
 	private int deltaX = 0, deltaY = 0;
 	private Image[] imageLeft = new Image[4], imageRight = new Image[4];
 	private Image standingLeft, standingRight, cloaked, portal;
@@ -26,17 +26,26 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 	private boolean cloak = false;
 	private int dashCD = 0, cloakCD = 0, inCloakTime;
 	private double distanceToClosestEnemy;
-	private final int DETECTIONDISTANCE = 1000000;
+	private final int DETECTIONDISTANCE = 1500000;
 	private WeaponSprite weapon = null;
+	private HealthSprite healthBar = null;
 	
 	private int portalTicks = 0;
+	private int health = 0;
+	private double healthPos = -850;
 
 
 
 
-	public ByteSprite(int health){
+	public ByteSprite(int health, Universe universe){
+		//health
+		this.health = health;
+		this.healthBar = new HealthSprite();
+		universe.getSprites().add(this.healthBar);
+		
 		//weapon
-		this.weapon = new WeaponSprite();
+		this.weapon = new WeaponSprite("Rifle");
+		universe.getSprites().add(this.weapon);
 
 		// image
 		for(int i = 1; i <= 4; i++) {
@@ -67,6 +76,10 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 	
 	public DisplayableSprite getWeapon() {
 		return this.weapon;
+	}
+	
+	public DisplayableSprite getHealthBar() {
+		return this.healthBar;
 	}
 
 	@Override
@@ -205,6 +218,12 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 
 	@Override
 	public void update(Universe universe, KeyboardInput k, long actual_delta_time) {
+		if(this.health<= 0) {
+			this.dispose = true;
+			this.weapon.setDispose(true);
+		}
+		this.healthPos = -850 + (-20) * (19-this.health);
+
 		//cloak
 		if(k.keyDownOnce(L) && this.cloakCD <= 0 && this.inCloakTime <= 0) {
 			this.cloak = true;
@@ -251,7 +270,7 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 					this.deltaX *= DASH_DISTANCE; this.deltaY *= DASH_DISTANCE;
 
 				}
-				this.dashCD = 2000;
+				this.dashCD = 800;
 				this.portalTicks = 200;
 			}
 		}
@@ -262,13 +281,6 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 		}
 		
 		
-		if(!this.cloak) {
-			this.centerX += this.deltaX;
-			this.centerY += this.deltaY;
-		}else {
-			this.centerX += this.deltaX * 0.2;
-			this.centerY += this.deltaY * 0.2;
-		}
 
 		
 		if(this.moving) {
@@ -277,6 +289,28 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 			this.movementCounter = 0;
 		}
 		
+
+		//health
+		this.healthBar.setDistanceToTarget(healthPos);
+		
+		boolean collidingBarrierX = checkCollisionWithBarrier(universe.getSprites(), deltaX, 0);
+		boolean collidingBarrierY = checkCollisionWithBarrier(universe.getSprites(), 0, deltaY);
+		
+		if (collidingBarrierX == false) {
+			if(!this.cloak) {
+				this.centerX += this.deltaX;
+			}else {
+				this.centerX += this.deltaX * 0.2;
+			}
+			
+		}
+		if (collidingBarrierY == false) {
+			if(!this.cloak) {
+				this.centerY += this.deltaY;
+			}else {
+				this.centerY += this.deltaY * 0.2;
+			}
+		}
 		
 		
 		//cooldowns
@@ -284,6 +318,32 @@ public class ByteSprite implements DisplayableSprite, MovableSprite{
 		this.dashCD -= Math.min(actual_delta_time, this.dashCD);
 		this.inCloakTime -= Math.min(actual_delta_time, this.inCloakTime);
 		this.portalTicks -= Math.min(actual_delta_time, this.portalTicks);
+	}
+	
+	private boolean checkCollisionWithBarrier(ArrayList<DisplayableSprite> sprites, double deltaX, double deltaY) {
+
+		boolean colliding = false;
+
+		for (DisplayableSprite sprite : sprites) {
+			if (sprite instanceof BarrierSprite) {
+				if (CollisionDetection.overlaps(this.getMinX() + deltaX, this.getMinY() + deltaY, 
+						this.getMaxX()  + deltaX, this.getMaxY() + deltaY, 
+						sprite.getMinX()+2,sprite.getMinY()+2, 
+						sprite.getMaxX()-2, sprite.getMaxY()-2)) {
+					colliding = true;
+					break;					
+				}
+			}
+		}		
+		return colliding;		
+	}
+
+
+	@Override
+	public void updateHealth(int i) {
+		this.health += i;
+		this.health = Math.min(this.health, 19);
+
 	}
 
 
