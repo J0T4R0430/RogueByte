@@ -35,6 +35,10 @@ public interface DisplayableSprite {
 	
 	public void setDispose(boolean dispose);
 	
+	public void updateHealth(int i);
+	
 	public DisplayableSprite getWeapon();
+
+	public DisplayableSprite getHealthBar();
 	
 }

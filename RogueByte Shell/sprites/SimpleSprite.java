@@ -86,32 +86,6 @@ public class SimpleSprite implements DisplayableSprite {
 	}
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
-		
-		double velocityX = 0;
-		double velocityY = 0;
-		
-		//LEFT	
-		if (keyboard.keyDown(37)) {
-			velocityX = -VELOCITY;
-		}
-		//UP
-		if (keyboard.keyDown(38)) {
-			velocityY = -VELOCITY;			
-		}
-		// RIGHT
-		if (keyboard.keyDown(39)) {
-			velocityX += VELOCITY;
-		}
-		// DOWN
-		if (keyboard.keyDown(40)) {
-			velocityY += VELOCITY;			
-		}
-
-		double deltaX = actual_delta_time * 0.001 * velocityX;
-        this.centerX += deltaX;
-		
-		double deltaY = actual_delta_time * 0.001 * velocityY;
-    	this.centerY += deltaY;
 
 	}
 
@@ -119,6 +93,41 @@ public class SimpleSprite implements DisplayableSprite {
 	@Override
 	public void setDispose(boolean dispose) {
 		this.dispose = true;
+	}
+
+
+	@Override
+	public boolean getCloak() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public void setDirection(boolean right) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setDistanceToTarget(double d) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void updateHealth(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public DisplayableSprite getWeapon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
